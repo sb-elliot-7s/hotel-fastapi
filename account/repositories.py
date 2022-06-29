@@ -11,7 +11,7 @@ class AccountRepository(AccountRepositoryInterface):
 
     async def __get_account(self, _filter: dict):
         if (account := await self._account_collection.find_one(filter=_filter)) is None:
-            return False
+            raise_exception(status.HTTP_404_NOT_FOUND, 'Account not found')
         return account
 
     async def __create_account_and_return(self, document: dict):
@@ -29,6 +29,4 @@ class AccountRepository(AccountRepositoryInterface):
         return await self.__create_account_and_return(document=document)
 
     async def get_account_by_email(self, email: str):
-        if (account := await self.__get_account({'email': email})) is None:
-            raise_exception(status.HTTP_404_NOT_FOUND, 'Account not found')
-        return account
+        return await self._account_collection.find_one(filter={'email': email})
