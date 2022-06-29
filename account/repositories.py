@@ -1,7 +1,7 @@
 from datetime import datetime
 from .interfaces.repositories_interface import AccountRepositoryInterface
 from .schemas import CreateAccountSchema
-from exceptions import raise_exception
+from common_exceptions import raise_exception
 from fastapi import status
 
 

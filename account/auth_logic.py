@@ -3,7 +3,7 @@ from .interfaces.password_interface import PasswordServiceInterface
 from .interfaces.token_interface import TokenServiceInterface
 from .schemas import CreateAccountSchema
 from fastapi import status
-from exceptions import raise_exception
+from common_exceptions import raise_exception
 
 
 class AuthLogic:

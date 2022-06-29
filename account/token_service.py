@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from .interfaces.token_interface import TokenServiceInterface
 from jose import jwt, JWTError
 from fastapi import status
-from exceptions import raise_exception
+from common_exceptions import raise_exception
 
 
 class TokenService(TokenServiceInterface):
