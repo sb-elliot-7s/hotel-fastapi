@@ -30,7 +30,6 @@ class CreateHotelSchema(BaseModel):
         _year_built = datetime.combine(date=self.year_built, time=time().min) if self.year_built else None
         return {
             'year_built': _year_built,
-            'available_count_of_apartments': self.count_of_apartments,
             **self.dict(exclude_none=True, exclude={'year_built'})
         }
 
@@ -55,8 +54,6 @@ class UpdateHotelSchema(CreateHotelSchema):
     @property
     def transformed_dict(self):
         data = self.dict(exclude_none=True)
-        if count_of_apts := data.get('count_of_apartments'):
-            data.update({'available_count_of_apartments': count_of_apts})
         if date_built := self.dict().get('year_built'):
             _d = datetime.combine(date_built, time().min)
             data.update({'year_built': _d})

@@ -20,6 +20,7 @@ class HotelRepositories(HotelRepositoriesInterface):
         document = {
             'account_id': account.id,
             'apartments': [],
+            'available_count_of_apartments': 0,
             **hotel.transformed_dict
         }
         result = await self._hotel_collection.insert_one(document=document)
@@ -47,7 +48,7 @@ class HotelRepositories(HotelRepositoriesInterface):
 
     async def show_hotels(self, query_data: QueryHotelSchema,
                           limit: int = 20, skip: int = 0) -> list[HotelSchema]:
-        query = await QueryService().prepare_query_data(query_data=query_data)
+        query = QueryService().prepare_query_data(query_data=query_data)
         cursor = self._hotel_collection \
             .find(query) \
             .sort('avg_rating', -1) \
