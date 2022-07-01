@@ -3,7 +3,9 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 from custom_object_id import ObjID
-from fastapi import Query
+from fastapi import Query, Form
+
+from ..review.review_schemas import ReviewSchema
 
 
 class CreateApartmentSchema(BaseModel):
@@ -18,6 +20,21 @@ class CreateApartmentSchema(BaseModel):
     is_furnished: bool = True
     is_garage: bool = False
     is_active: bool = True
+    currency: Optional[str]
+
+    @classmethod
+    def as_form(cls, hotel_id: str = Form(...), total_area: float = Form(...),
+                numer_of_bedrooms: int = Form(1), number_of_bathroom: int = Form(1),
+                is_booked: bool = Form(False), price: float = Form(...), title: str = Form(...),
+                description: Optional[str] = Form(None), is_furnished: bool = Form(True),
+                is_garage: bool = Form(False), is_active: bool = Form(True),
+                currency: Optional[str] = Form(None)):
+        return cls(
+            hotel_id=hotel_id, total_area=total_area, number_of_bathroom=number_of_bathroom,
+            numer_of_bedrooms=numer_of_bedrooms, is_booked=is_booked, price=price, title=title,
+            description=description, is_furnished=is_furnished, is_garage=is_garage,
+            is_active=is_active, currency=currency
+        )
 
 
 class UpdateApartmentSchema(BaseModel):
@@ -26,6 +43,7 @@ class UpdateApartmentSchema(BaseModel):
     number_of_bathroom: Optional[int]
     is_booked: Optional[bool]
     price: Optional[float]
+    currency: Optional[str]
     title: Optional[str]
     description: Optional[str]
     is_furnished: Optional[bool]
@@ -36,12 +54,26 @@ class UpdateApartmentSchema(BaseModel):
     def transformed_dict(self):
         return {**self.dict(exclude_none=True), 'updated': datetime.utcnow()}
 
+    @classmethod
+    def as_form(cls, total_area: float = Form(...),
+                numer_of_bedrooms: Optional[int] = Form(None), number_of_bathroom: Optional[int] = Form(None),
+                is_booked: bool = Form(False), price: float = Form(...), title: str = Form(...),
+                description: Optional[str] = Form(None), is_furnished: bool = Form(True),
+                is_garage: bool = Form(False), is_active: bool = Form(True),
+                currency: Optional[str] = Form(None)):
+        return cls(total_area=total_area, number_of_bathroom=number_of_bathroom, is_booked=is_booked,
+                   numer_of_bedrooms=numer_of_bedrooms, price=price, title=title, description=description,
+                   is_furnished=is_furnished, is_garage=is_garage, is_active=is_active, currency=currency)
+
 
 class ApartmentSchema(CreateApartmentSchema):
     id: ObjID = Field(alias='_id')
     account_id: str
     created: datetime
     updated: Optional[datetime]
+
+    images: Optional[list[ObjID]]
+    reviews: Optional[list[ReviewSchema]]
 
     class Config:
         json_encoders = {
@@ -81,9 +113,9 @@ class ApartmentQuerySchema(BaseModel):
         )
 
 
-class Image(BaseModel):
-    id: ObjID = Field(alias='_id')
-    apartment_id: str
+class SearchApartmentSchema(BaseModel):
+    search_query: Optional[str]
 
-    class Config:
-        json_encoders = {ObjID: lambda o: str(o)}
+    @classmethod
+    def as_query(cls, search_query: Optional[str]=Query(None)):
+        return cls(search_query=search_query)
