@@ -22,7 +22,6 @@ class CreateHotelSchema(BaseModel):
     count_of_apartments: int = Field(..., gt=0)
     name: str
     description: Optional[str]
-    avg_rating: float = 0.0
     address: AddressSchema
 
     @property
@@ -43,7 +42,7 @@ class UpdateAddressSchema(AddressSchema):
     latitude: Optional[float]
 
 
-class UpdateHotelSchema(CreateHotelSchema):
+class UpdateHotelSchema(BaseModel):
     is_pool: Optional[bool]
     is_elevator: Optional[bool]
     count_of_apartments: Optional[int] = Field(None, gt=0)
@@ -64,6 +63,7 @@ class HotelSchema(CreateHotelSchema):
     id: ObjID = Field(alias='_id')
     address: AddressSchema
     account_id: str
+    avg_rating: float = 0.0
     available_count_of_apartments: int
     apartments: list[ApartmentSchema]
 
