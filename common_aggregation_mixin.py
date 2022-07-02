@@ -1,3 +1,5 @@
+from typing import Union
+
 from bson import ObjectId
 
 
@@ -67,6 +69,13 @@ class AggregationMixin:
         :return: {'inc': {'key1': value1, 'key2': value2}
         """
         return {'$inc': {**fields}}
+
+    @staticmethod
+    def project(**specifications): return {'$project': specifications}
+
+    @staticmethod
+    def group_by(_id: Union[str, dict], **fields):
+        return {'$group': {'_id': _id, **fields}}
 
     async def get_common_pipeline_for_find_apartments(self, skip: int, limit: int, _filter: dict):
         return [
