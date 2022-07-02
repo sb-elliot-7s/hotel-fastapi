@@ -26,9 +26,11 @@ class BookingRepositories(AggregationMixin, BookingRepositoriesInterface):
         return booking
 
     async def __update_apartment(self, apartment_id: str, is_booked: bool):
-        return await self.__apartment_collection.find_one_and_update(
-            filter=self.filter_apartment(_id=ObjectId(apartment_id)),
-            update=self.set_document(document={'is_booked': is_booked}), return_document=True)
+        if not (apartment := await self.__apartment_collection.find_one_and_update(
+                filter=self.filter_apartment(_id=ObjectId(apartment_id)),
+                update=self.set_document(document={'is_booked': is_booked}), return_document=True)):
+            raise_exception(status.HTTP_404_NOT_FOUND, f'Apartment {apartment_id} not found')
+        return apartment
 
     async def booking(self, account, apartment_id: str, date_booking_data: CreateBookingSchema):
         async with await client.start_session() as session:
