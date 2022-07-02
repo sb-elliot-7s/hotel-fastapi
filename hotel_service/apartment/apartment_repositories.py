@@ -110,6 +110,7 @@ class ApartmentRepositories(AggregationMixin, ApartmentRepositoriesInterface):
 
     async def search(self, search_data: SearchApartmentSchema, skip: int, limit: int):
         query = self.search_text(search_data.search_query)
+        query.update({'is_booked': False})
         pipeline = await self.get_common_pipeline_for_find_apartments(skip=skip, limit=limit, _filter=query)
         return [apt async for apt in self.__apartment_collection.aggregate(pipeline=pipeline)]
 
