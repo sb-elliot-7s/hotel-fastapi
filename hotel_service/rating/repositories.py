@@ -56,3 +56,10 @@ class RatingRepositories(AggregationMixin, RatingRepositoriesInterface):
             {'_id': ObjectId(rating.get('apartment_id'))},
             self.set_document({'avg_rating': rating.get('avg_rating')})
         )
+
+    async def calculate_avg_rating_for_apartments(self):
+        pipeline = [
+            self.group_by(_id='$apartment_id', avg_rating={'$avg': '$grade'}),
+            self.project(apartment_id='$_id', avg_rating=1, _id=0)
+        ]
+        return [avg_rating async for avg_rating in self.__rating_collection.aggregate(pipeline=pipeline)]
