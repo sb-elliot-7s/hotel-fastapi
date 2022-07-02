@@ -60,6 +60,7 @@ class ApartmentRepositories(AggregationMixin, ApartmentRepositoriesInterface):
 
     async def create_apartment(self, account, apartment: CreateApartmentSchema,
                                images: Optional[list[UploadFile]] = None):
+        # need replicas and add session to update, insert method
         async with await client.start_session() as session:
             async with session.start_transaction():
                 apt = await self.__create_apartment(account=account, apartment=apartment, images=images)
@@ -67,6 +68,7 @@ class ApartmentRepositories(AggregationMixin, ApartmentRepositoriesInterface):
                 return apt
 
     async def remove_apartment(self, account, apartment_id: str):
+        # need replicas and add session to update, insert method
         async with await client.start_session() as session:
             async with session.start_transaction():
                 apt_filter = self.filter_apartment(_id=ObjectId(apartment_id), account_id=account.id)
@@ -115,6 +117,7 @@ class ApartmentRepositories(AggregationMixin, ApartmentRepositoriesInterface):
         return [apt async for apt in self.__apartment_collection.aggregate(pipeline=pipeline)]
 
     async def delete_image(self, image_id: str, account):
+        # need replicas and add session to update, insert method
         async with await client.start_session() as session:
             async with session.start_transaction():
                 await self.__image_service.delete_image(image_id=image_id)

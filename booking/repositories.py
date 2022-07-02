@@ -33,9 +33,11 @@ class BookingRepositories(AggregationMixin, BookingRepositoriesInterface):
         return apartment
 
     async def booking(self, account, apartment_id: str, date_booking_data: CreateBookingSchema):
+        # need replicas and add session to update, insert method
         async with await client.start_session() as session:
             async with session.start_transaction():
-                apartment = await self.__update_apartment(apartment_id=apartment_id, is_booked=True)
+                apartment = await self.__update_apartment(
+                    apartment_id=apartment_id, is_booked=True)
 
                 cnt_of_days_rent = await self.__calculating_days_service.calculate(
                     check_in=date_booking_data.check_in,
@@ -63,6 +65,7 @@ class BookingRepositories(AggregationMixin, BookingRepositoriesInterface):
                 return await self.__get_booking(booking_id=result.inserted_id, account_id=account.id)
 
     async def cancel_booking(self, account, booking_id: str):
+        # need replicas and add session to update, insert method
         async with await client.start_session() as session:
             async with session.start_transaction():
                 document = {'is_active': False, 'updated': datetime.utcnow()}
