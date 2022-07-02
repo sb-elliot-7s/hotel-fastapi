@@ -117,5 +117,5 @@ class SearchApartmentSchema(BaseModel):
     search_query: Optional[str]
 
     @classmethod
-    def as_query(cls, search_query: Optional[str]=Query(None)):
+    def as_query(cls, search_query: Optional[str] = Query(None)):
         return cls(search_query=search_query)

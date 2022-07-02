@@ -8,7 +8,7 @@ from .interfaces.apartment_repositories_interface import ApartmentRepositoriesIn
 from common_exceptions import raise_exception
 from fastapi import status, UploadFile
 from .apt_query_service import ApartmentQueryService
-from .apartment_aggregation_mixin import AggregationMixin
+from common_aggregation_mixin import AggregationMixin
 from image_service.image_service_interface import ImageServiceInterface
 
 
@@ -92,8 +92,7 @@ class ApartmentRepositories(AggregationMixin, ApartmentRepositoriesInterface):
                 update={
                     **self.set_document(document=apartment.transformed_dict),
                     **self.push_items_to_array(array_name='images', items=images_id, default=[])
-                }, return_document=True)
-        ) is None:
+                }, return_document=True)) is None:
             raise_exception(status.HTTP_404_NOT_FOUND, 'Apartment not found')
         return apartment
 
@@ -118,9 +117,8 @@ class ApartmentRepositories(AggregationMixin, ApartmentRepositoriesInterface):
         async with await client.start_session() as session:
             async with session.start_transaction():
                 await self.__image_service.delete_image(image_id=image_id)
-                filter_data = self.filter_apartment(
-                    account_id=account.id, images=self.check_in([ObjectId(image_id)]))
-                apartment = await self.__apartment_collection.find_one(filter_data)
+                apartment = await self.__apartment_collection.find_one(
+                    self.filter_apartment(account_id=account.id, images=self.check_in([ObjectId(image_id)])))
                 await self.__apartment_collection \
                     .update_one(filter=self.filter_apartment(_id=apartment['_id']),
                                 update=self.pull_item(images=ObjectId(image_id)))

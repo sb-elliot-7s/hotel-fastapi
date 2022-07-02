@@ -28,7 +28,7 @@ async def get_repository(
     }
 
 
-async def get_account(
+async def get_owner_account(
         account=Depends(AccountPermission(token_service=TokenService(**token_service_data)).get_owner_user)
 ):
     yield account
@@ -47,14 +47,14 @@ async def search_apartment(skip: int = 0, limit: int = 20,
                        response_model_by_alias=False)
 async def create_apartment(apartment: CreateApartmentSchema = Depends(CreateApartmentSchema.as_form),
                            images: Optional[list[UploadFile]] = File(None),
-                           repo=Depends(get_repository), account=Depends(get_account)):
+                           repo=Depends(get_repository), account=Depends(get_owner_account)):
     return await ApartmentServices(**repo) \
         .create_apartment(apartment=apartment, images=images, account=account)
 
 
 @apartment_router.delete('/{apartment_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def remove_apartment(apartment_id: str, repository=Depends(get_repository),
-                           account=Depends(get_account)):
+                           account=Depends(get_owner_account)):
     if not (_ := await ApartmentServices(**repository)
             .remove_apartment(apartment_id=apartment_id, account=account)):
         return responses.JSONResponse({'detail': 'Apartment not deleted'})
@@ -65,7 +65,7 @@ async def remove_apartment(apartment_id: str, repository=Depends(get_repository)
                         response_model_by_alias=False)
 async def update_apartment(apartment_id: str,
                            apartment: UpdateApartmentSchema = Depends(UpdateApartmentSchema.as_form),
-                           repository=Depends(get_repository), account=Depends(get_account),
+                           repository=Depends(get_repository), account=Depends(get_owner_account),
                            images: Optional[list[UploadFile]] = File(None)):
     return await ApartmentServices(**repository) \
         .update_apartment(apartment_id=apartment_id, account=account, apartment=apartment, images=images)
@@ -87,6 +87,7 @@ async def all_available_apartments_in_the_hotel(
 
 
 @apartment_router.delete('/images/{image_id}')
-async def delete_image(image_id: str, account=Depends(get_account), repository=Depends(get_repository)):
+async def delete_image(image_id: str, account=Depends(get_owner_account),
+                       repository=Depends(get_repository)):
     await ApartmentServices(**repository).delete_image(image_id=image_id, account=account)
     return responses.JSONResponse({'detail': f'Image {image_id} has been deleted'})
