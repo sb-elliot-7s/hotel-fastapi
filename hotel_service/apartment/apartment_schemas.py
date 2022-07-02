@@ -69,6 +69,7 @@ class UpdateApartmentSchema(BaseModel):
 class ApartmentSchema(CreateApartmentSchema):
     id: ObjID = Field(alias='_id')
     account_id: str
+    avg_rating: Optional[float]
     created: datetime
     updated: Optional[datetime]
 
