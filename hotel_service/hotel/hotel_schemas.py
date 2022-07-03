@@ -4,6 +4,8 @@ from fastapi import Query
 from pydantic import BaseModel, Field
 from custom_object_id import ObjID
 
+from ..apartment.apartment_schemas import ApartmentSchema
+
 
 class AddressSchema(BaseModel):
     country: str = Field(max_length=255)
@@ -64,6 +66,8 @@ class HotelSchema(CreateHotelSchema):
     account_id: str
     avg_rating: float = 0.0
     available_count_of_apartments: int
+
+    apartments: Optional[list[ApartmentSchema]]
 
     class Config:
         json_encoders = {
