@@ -7,7 +7,20 @@ from hotel_service.favorite.favorite_routers import favorite_router
 from hotel_service.review.review_routers import review_router
 from hotel_service.rating.routers import rating_router
 
+from producer import producer
+
 app = FastAPI(title='hotel_service')
+
+
+@app.on_event("startup")
+async def startup_event():
+    await producer.start()
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    await producer.stop()
+
 
 app.include_router(hotel_routers)
 app.include_router(booking_router)
