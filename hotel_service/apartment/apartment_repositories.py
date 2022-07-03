@@ -116,8 +116,9 @@ class ApartmentRepositories(AggregationMixin, ApartmentRepositoriesInterface):
 
     async def detail_apartment(self, apartment_id: str):
         pipeline = await self.get_pipeline_for_detail_apartment(apartment_id=apartment_id)
-        if apt := (await self.__apartment_collection.aggregate(pipeline=pipeline).to_list(length=1))[0]:
-            return apt
+        if not (apt := (await self.__apartment_collection.aggregate(pipeline=pipeline).to_list(length=1))):
+            raise_exception(status.HTTP_404_NOT_FOUND, 'Apartment not found')
+        return apt[0]
 
     async def all_available_apartments(self, hotel_id: str, query_data: ApartmentQuerySchema,
                                        skip: int, limit: int):
