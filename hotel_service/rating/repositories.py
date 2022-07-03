@@ -34,7 +34,7 @@ class RatingRepositories(AggregationMixin, RatingRepositoriesInterface):
 
     async def change_rating(self, rating_id: str, account, rate_apartment_data: RateApartmentSchema):
         if (rating := await self.__rating_collection.find_one_and_update(
-                filter=self.filter_apartment(_id=ObjectId(rating_id), account_id=account.id),
+                filter=self.filter_objects(_id=ObjectId(rating_id), account_id=account.id),
                 update=self.set_document({'updated': datetime.utcnow(), 'grade': rate_apartment_data.grade}),
                 return_document=True)) is None:
             raise_exception(status.HTTP_404_NOT_FOUND, f'Rating {rating_id} not found')

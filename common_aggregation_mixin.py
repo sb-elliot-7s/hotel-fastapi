@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 
 from bson import ObjectId
 
@@ -18,7 +18,7 @@ class AggregationMixin:
         }
 
     @staticmethod
-    def search_text(text: str): return {'$text': {'$search': text}}
+    def search_text(text: Optional[str]): return {'$text': {'$search': text or ''}}
 
     @staticmethod
     def match(query: dict): return {'$match': query}
@@ -37,7 +37,7 @@ class AggregationMixin:
         return {"$addFields": {new_name: {f"${operator}": f"${old_name}"}}}
 
     @staticmethod
-    def filter_apartment(**params): return params
+    def filter_objects(**params): return params
 
     @staticmethod
     def pull_item(**conditions): return {'$pull': {**conditions}}
