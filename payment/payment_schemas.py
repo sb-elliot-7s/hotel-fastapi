@@ -8,11 +8,11 @@ from fastapi import Query
 
 
 class CreatePaymentSchema(BaseModel):
-    amount: float = Field(..., gt=0.0)
+    amount: int = Field(..., gt=0)
     currency: Optional[str] = 'usd'
     description: Optional[str]
     apartment_id: str
-    booking_id: str
+    source: Optional[str]
 
 
 class PaymentSchema(CreatePaymentSchema):
@@ -42,9 +42,9 @@ class QueryPaymentSchema(BaseModel):
             to_amount: Optional[float] = Query(None),
             payment_status: Optional[PaymentStatus] = Query(None)
     ):
-        return cls(
-            currency=currency,
-            from_amount=from_amount,
-            to_amount=to_amount,
-            payment_status=payment_status
-        )
+        return cls(currency=currency, from_amount=from_amount,
+                   to_amount=to_amount, payment_status=payment_status)
+
+
+class CardSchema(BaseModel):
+    token: str

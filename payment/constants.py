@@ -12,3 +12,9 @@ class PaymentStatus(Enum):
     UNPAID = 'unpaid'
     IN_PROCESS = 'in_process'
     CANCELED = 'canceled'
+
+
+class ReasonRefund(Enum):
+    DUPLICATE = 'duplicate'
+    FRAUDULENT = 'fraudulent'
+    REQUESTED_BY_CUSTOMER = 'requested_by_customer'

@@ -7,6 +7,8 @@ from hotel_service.favorite.favorite_routers import favorite_router
 from hotel_service.review.review_routers import review_router
 from hotel_service.rating.routers import rating_router
 
+from payment.payment_routers import payment_router
+
 from producer import producer
 
 app = FastAPI(title='hotel_service')
@@ -29,3 +31,4 @@ app.include_router(apartment_router)
 app.include_router(favorite_router)
 app.include_router(review_router)
 app.include_router(rating_router)
+app.include_router(payment_router)
