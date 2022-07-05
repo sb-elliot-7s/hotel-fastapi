@@ -35,6 +35,7 @@ class AccountSchema(BaseAccountSchema):
     id: ObjID = Field(alias='_id')
     profile_image: Optional[str]
     is_active: bool
+    stripe_account_id: Optional[str]
     created: datetime
     updated: Optional[datetime]
 
