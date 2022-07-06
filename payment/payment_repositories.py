@@ -7,7 +7,7 @@ from stripe import Charge, Customer
 
 from configs import get_configs
 from .interfaces.payment_repositories_interface import PaymentRepositoriesInterface
-from .payment_schemas import CreatePaymentSchema, CardSchema
+from .payment_schemas import CreatePaymentSchema, CardSchema, UpdateCardSchema
 from common_aggregation_mixin import AggregationMixin
 from .decorators import stripe_decorator_error
 from .constants import PaymentStatus
@@ -82,4 +82,37 @@ class PaymentRepositories(AggregationMixin, PaymentRepositoriesInterface):
             api_key=get_configs().stripe_api_key,
             id=account.stripe_account_id,
             source=card_token.token
+        )
+
+    @staticmethod
+    async def get_card(account, card_id: str):
+        return Customer.retrieve_source(
+            account.stripe_account_id,
+            card_id,
+            api_key=get_configs().stripe_api_key
+        )
+
+    @staticmethod
+    async def delete_card(card_id: str, account):
+        return Customer.delete_source(
+            account.stripe_account_id,
+            card_id,
+            api_key=get_configs().stripe_api_key
+        )
+
+    @staticmethod
+    async def list_of_all_cards(account, limit: int = 10):
+        return Customer.list_sources(
+            account.stripe_account_id,
+            object="card",
+            limit=limit
+        )
+
+    async def update_card(self, account, card_id: str,
+                          updated_card_data: UpdateCardSchema):
+        return Customer.modify_source(
+            api_key=get_configs().stripe_api_key,
+            id=account.stripe_account_id,
+            nested_id=card_id,
+            **updated_card_data.dict(exclude_none=True)
         )

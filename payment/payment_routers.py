@@ -2,7 +2,8 @@ from fastapi import APIRouter, status, Depends
 from .payment_services import PaymentService
 from .payment_repositories import PaymentRepositories
 from permissions import AccountPermission
-from payment.payment_schemas import CreatePaymentSchema, CardSchema
+from payment.payment_schemas import CreatePaymentSchema, CardSchema, \
+    UpdateCardSchema
 from account.token_service import TokenService
 from token_service_data import token_service_data
 from .deps import get_payment_collection
@@ -27,7 +28,7 @@ async def get_repository_service(
     }
 
 
-@payment_router.post('/card')
+@payment_router.post('/card', status_code=status.HTTP_201_CREATED)
 async def create_card(
         card_token=Depends(CardSchema),
         account=Depends(get_account),
@@ -42,7 +43,40 @@ async def create_card(
         .create_card(account=account, card_token=card_token)
 
 
-@payment_router.get('/all')
+@payment_router.get('/card/', status_code=status.HTTP_200_OK)
+async def list_of_all_cards(
+        account=Depends(get_account), limit: int = 10,
+        repository_service=Depends(get_repository_service)
+):
+    return await PaymentService(**repository_service) \
+        .list_of_all_cards(account=account, limit=limit)
+
+
+@payment_router.get('/card/{card_id}', status_code=status.HTTP_200_OK)
+async def get_card(card_id: str, account=Depends(get_account),
+                   repository_service=Depends(get_repository_service)):
+    return await PaymentService(**repository_service) \
+        .get_card(account=account, card_id=card_id)
+
+
+@payment_router.patch('/card/{card_id}', status_code=status.HTTP_200_OK)
+async def update_card(
+        card_id: str, updated_card_data: UpdateCardSchema,
+        account=Depends(get_account),
+        repository_service=Depends(get_repository_service)
+):
+    return await PaymentService(**repository_service).update_card(
+        card_id=card_id, account=account, updated_card_data=updated_card_data)
+
+
+@payment_router.delete('/card/{card_id}', status_code=status.HTTP_204_NO_CONTENT)
+async def delete_card(card_id: str, account=Depends(get_account),
+                      repository_service=Depends(get_repository_service)):
+    return await PaymentService(**repository_service) \
+        .delete_card(account=account, card_id=card_id)
+
+
+@payment_router.get('/all', status_code=status.HTTP_200_OK)
 async def get_payments(
         limit: int = 20,
         account=Depends(get_account),
@@ -63,7 +97,7 @@ async def create_payment(
         booking_id=booking_id, payment_data=payment_data, account=account)
 
 
-@payment_router.get('/{payment_id}')
+@payment_router.get('/{payment_id}', status_code=status.HTTP_200_OK)
 async def get_payment(
         payment_id: str,
         account=Depends(get_account),

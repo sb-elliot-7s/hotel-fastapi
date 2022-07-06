@@ -48,3 +48,43 @@ class QueryPaymentSchema(BaseModel):
 
 class CardSchema(BaseModel):
     token: str
+
+
+description_card_fields = {
+    'address_city': 'City/District/Suburb/Town/Village.',
+    'address_country': 'Billing address country, if provided when creating card.',
+    'address_line1': 'Address line 1 (Street address/PO Box/Company name).',
+    'address_line2': 'Address line 2 (Apartment/Suite/Unit/Building).',
+    'address_state': 'State/County/Province/Region.',
+    'address_zip': 'ZIP or postal code.',
+    'exp_month': 'Two digit number representing the card’s expiration month.',
+    'exp_year': 'Four digit number representing the card’s expiration year.',
+    'metadata': 'Set of key-value pairs that you can attach to an object. '
+                'This can be useful for storing additional information about '
+                'the object in a structured format. Individual keys can be unset '
+                'by posting an empty value to them. All keys can be unset by posting'
+                ' an empty value to metadata.',
+    'name': 'Cardholder name.'
+}
+
+
+class UpdateCardSchema(BaseModel):
+    address_city: Optional[str] = Field(
+        description=description_card_fields.get('address_city'))
+    address_country: Optional[str] = Field(
+        description=description_card_fields.get('address_country'))
+    address_line1: Optional[str] = Field(
+        description=description_card_fields.get('address_line1'))
+    address_line2: Optional[str] = Field(
+        description=description_card_fields.get('address_line2'))
+    address_state: Optional[str] = Field(
+        description=description_card_fields.get('address_state'))
+    address_zip: Optional[str] = Field(
+        description=description_card_fields.get('address_zip'))
+    exp_month: Optional[int] = Field(
+        description=description_card_fields.get('exp_month'))
+    exp_year: Optional[int] = Field(
+        description=description_card_fields.get('exp_year'))
+    metadata: Optional[dict] = Field(
+        description=description_card_fields.get('metadata'))
+    name: Optional[str] = Field(description=description_card_fields.get('name'))
