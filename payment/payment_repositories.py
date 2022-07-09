@@ -6,7 +6,8 @@ from fastapi import HTTPException, status
 from stripe import Charge, Customer
 
 from configs import get_configs
-from .interfaces.payment_repositories_interface import PaymentRepositoriesInterface
+from .interfaces.payment_repositories_interface import \
+    PaymentRepositoriesInterface
 from .payment_schemas import CreatePaymentSchema, CardSchema, UpdateCardSchema
 from common_aggregation_mixin import AggregationMixin
 from .decorators import stripe_decorator_error
@@ -21,7 +22,8 @@ class PaymentRepositories(AggregationMixin, PaymentRepositoriesInterface):
         self.__payment_collection = payment_collection
 
     @stripe_decorator_error
-    async def create_payment(self, booking_id: str, account, payment_data: CreatePaymentSchema):
+    async def create_payment(self, booking_id: str, account,
+                             payment_data: CreatePaymentSchema):
         charge = Charge.create(
             api_key=get_configs().stripe_api_key,
             amount=payment_data.amount,
@@ -32,7 +34,8 @@ class PaymentRepositories(AggregationMixin, PaymentRepositoriesInterface):
             receipt_email=account.email,
             idempotency_key=str(uuid.uuid4())
         )
-        amount = str(payment_data.amount)[:-2] + '.' + str(payment_data.amount)[-2:]
+        amount = str(payment_data.amount)[:-2] + '.' + str(payment_data.amount)[
+                                                       -2:]
         document = {
             'payment_id': charge['id'],
             'amount': amount,

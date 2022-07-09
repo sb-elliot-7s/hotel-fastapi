@@ -1,4 +1,5 @@
-from .interfaces.payment_repositories_interface import PaymentRepositoriesInterface
+from .interfaces.payment_repositories_interface import \
+    PaymentRepositoriesInterface
 from .payment_schemas import CreatePaymentSchema, CardSchema, UpdateCardSchema
 
 

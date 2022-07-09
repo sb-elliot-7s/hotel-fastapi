@@ -1,6 +1,7 @@
 from bson import ObjectId
 from .interfaces.hotel_repositories_interface import HotelRepositoriesInterface
-from .hotel_schemas import CreateHotelSchema, QueryHotelSchema, UpdateHotelSchema
+from .hotel_schemas import CreateHotelSchema, QueryHotelSchema, \
+    UpdateHotelSchema
 from common_exceptions import raise_exception
 from fastapi import status
 
@@ -15,11 +16,14 @@ class HotelRepositories(AggregationMixin, HotelRepositoriesInterface):
     async def __get_hotel(self, hotel_id: str):
         pipeline = [
             self.match(query={'_id': ObjectId(hotel_id)}),
-            self.add_fields(new_name='hotel_id', operator='toString', old_name='_id'),
-            self.lookup(secondary_collection='apartment', secondary_collection_field='hotel_id',
+            self.add_fields(new_name='hotel_id', operator='toString',
+                            old_name='_id'),
+            self.lookup(secondary_collection='apartment',
+                        secondary_collection_field='hotel_id',
                         primary_collection_field='hotel_id', _as='apartments')
         ]
-        hotel = await self._hotel_collection.aggregate(pipeline=pipeline).to_list(length=1)
+        hotel = await self._hotel_collection.aggregate(
+            pipeline=pipeline).to_list(length=1)
         if not hotel:
             raise_exception(status.HTTP_404_NOT_FOUND, 'Hotel not found')
         return hotel[0]
@@ -43,7 +47,8 @@ class HotelRepositories(AggregationMixin, HotelRepositoriesInterface):
     async def update_hotel(self, hotel_id: str, account,
                            hotel: UpdateHotelSchema):
         hotel_update = hotel.transformed_dict
-        if 'address' in hotel.transformed_dict and (address := hotel_update.pop('address')):
+        if 'address' in hotel.transformed_dict \
+                and (address := hotel_update.pop('address')):
             hotel_update.update({f'address.{k}': v for k, v in address.items()})
         hotel_update = {'$set': hotel_update}
         hotel_filter = {'_id': ObjectId(hotel_id), 'account_id': account.id}
@@ -61,13 +66,16 @@ class HotelRepositories(AggregationMixin, HotelRepositoriesInterface):
         query = QueryService().prepare_query_data(query_data=query_data)
         pipeline = [
             self.match(query=query),
-            self.add_fields(new_name='hotel_id', operator='toString', old_name='_id'),
+            self.add_fields(
+                new_name='hotel_id', operator='toString', old_name='_id'),
             self.lookup(
-                secondary_collection='apartment', secondary_collection_field='hotel_id',
+                secondary_collection='apartment',
+                secondary_collection_field='hotel_id',
                 primary_collection_field='hotel_id', _as='apartments'
             ),
             self.skip(value=skip),
             self.limit(value=limit),
             self.sort(avg_rating=-1)
         ]
-        return [hotel async for hotel in self._hotel_collection.aggregate(pipeline=pipeline)]
+        return [hotel async for hotel in
+                self._hotel_collection.aggregate(pipeline=pipeline)]

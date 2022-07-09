@@ -31,12 +31,14 @@ class ImageService(ImageServiceInterface):
 
     @image_not_found_decorator
     async def read_image(self, image_id: str):
-        grid_out = await self.__grid_fs.open_download_stream(file_id=ObjectId(image_id))
+        grid_out = await self.__grid_fs.open_download_stream(
+            file_id=ObjectId(image_id))
         return self.__get_chunks(grid=grid_out)
 
     @image_not_found_decorator
     async def write_image(self, image: UploadFile, image_name: str) -> ObjectId:
-        return await self.__grid_fs.upload_from_stream(filename=image_name, source=await image.read())
+        return await self.__grid_fs.upload_from_stream(
+            filename=image_name, source=await image.read())
 
     @image_not_found_decorator
     async def delete_image(self, image_id: str):

@@ -24,15 +24,20 @@ class CreateApartmentSchema(BaseModel):
 
     @classmethod
     def as_form(cls, hotel_id: str = Form(...), total_area: float = Form(...),
-                numer_of_bedrooms: int = Form(1), number_of_bathroom: int = Form(1),
-                is_booked: bool = Form(False), price: float = Form(...), title: str = Form(...),
-                description: Optional[str] = Form(None), is_furnished: bool = Form(True),
+                numer_of_bedrooms: int = Form(1),
+                number_of_bathroom: int = Form(1),
+                is_booked: bool = Form(False),
+                price: float = Form(...), title: str = Form(...),
+                description: Optional[str] = Form(None),
+                is_furnished: bool = Form(True),
                 is_garage: bool = Form(False), is_active: bool = Form(True),
                 currency: Optional[str] = Form(None)):
         return cls(
-            hotel_id=hotel_id, total_area=total_area, number_of_bathroom=number_of_bathroom,
-            numer_of_bedrooms=numer_of_bedrooms, is_booked=is_booked, price=price, title=title,
-            description=description, is_furnished=is_furnished, is_garage=is_garage,
+            hotel_id=hotel_id, total_area=total_area,
+            number_of_bathroom=number_of_bathroom,
+            numer_of_bedrooms=numer_of_bedrooms, is_booked=is_booked,
+            price=price, title=title, description=description,
+            is_furnished=is_furnished, is_garage=is_garage,
             is_active=is_active, currency=currency
         )
 
@@ -56,14 +61,20 @@ class UpdateApartmentSchema(BaseModel):
 
     @classmethod
     def as_form(cls, total_area: float = Form(...),
-                numer_of_bedrooms: Optional[int] = Form(None), number_of_bathroom: Optional[int] = Form(None),
-                is_booked: bool = Form(False), price: float = Form(...), title: str = Form(...),
-                description: Optional[str] = Form(None), is_furnished: bool = Form(True),
+                numer_of_bedrooms: Optional[int] = Form(None),
+                number_of_bathroom: Optional[int] = Form(None),
+                is_booked: bool = Form(False), price: float = Form(...),
+                title: str = Form(...),
+                description: Optional[str] = Form(None),
+                is_furnished: bool = Form(True),
                 is_garage: bool = Form(False), is_active: bool = Form(True),
                 currency: Optional[str] = Form(None)):
-        return cls(total_area=total_area, number_of_bathroom=number_of_bathroom, is_booked=is_booked,
-                   numer_of_bedrooms=numer_of_bedrooms, price=price, title=title, description=description,
-                   is_furnished=is_furnished, is_garage=is_garage, is_active=is_active, currency=currency)
+        return cls(total_area=total_area, number_of_bathroom=number_of_bathroom,
+                   is_booked=is_booked,
+                   numer_of_bedrooms=numer_of_bedrooms, price=price,
+                   title=title, description=description,
+                   is_furnished=is_furnished, is_garage=is_garage,
+                   is_active=is_active, currency=currency)
 
 
 class ApartmentSchema(CreateApartmentSchema):

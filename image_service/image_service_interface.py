@@ -9,7 +9,9 @@ class ImageServiceInterface(ABC):
     async def read_image(self, image_id: str): pass
 
     @abstractmethod
-    async def write_image(self, image: UploadFile, image_name: str) -> ObjectId: pass
+    async def write_image(
+            self, image: UploadFile, image_name: str) -> ObjectId:
+        pass
 
     @abstractmethod
     async def delete_image(self, image_id: str): pass

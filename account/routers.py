@@ -27,5 +27,7 @@ async def registration(account_data: CreateAccountSchema,
 
 
 @account_router.post(**router_data.get('login'))
-async def login(email: str = Form(...), password: str = Form(...), service_data=Depends(get_account_service)):
-    return await AuthLogic(**service_data).login(email=email, password=password)
+async def login(email: str = Form(...), password: str = Form(...),
+                service_data=Depends(get_account_service)):
+    return await AuthLogic(**service_data).login(
+        email=email, password=password)

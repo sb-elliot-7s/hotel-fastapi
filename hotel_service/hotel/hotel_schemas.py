@@ -27,7 +27,8 @@ class CreateHotelSchema(BaseModel):
 
     @property
     def transformed_dict(self):
-        _year_built = datetime.combine(date=self.year_built, time=time().min) if self.year_built else None
+        _year_built = datetime.combine(
+            date=self.year_built, time=time().min) if self.year_built else None
         return {
             'year_built': _year_built,
             **self.dict(exclude_none=True, exclude={'year_built'})
@@ -102,5 +103,6 @@ class QueryHotelSchema(BaseModel):
         return cls(
             is_pool=is_pool, is_elevator=is_elevator, avg_rating=avg_rating,
             from_year_built=from_year_built, to_year_built=to_year_built,
-            longitude=longitude, latitude=latitude, country=country, city=city, street=street
+            longitude=longitude, latitude=latitude, country=country, city=city,
+            street=street
         )

@@ -21,7 +21,8 @@ async def consume_available_apt():
     try:
         async for msg in consumer:
             data = json.loads(msg.value)
-            await update_hotel(hotel_id=data['hotel_id'], value=data['available_count_of_apartments'])
+            await update_hotel(hotel_id=data['hotel_id'],
+                               value=data['available_count_of_apartments'])
     finally:
         await consumer.stop()
 

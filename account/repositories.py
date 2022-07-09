@@ -15,7 +15,8 @@ class AccountRepository(AccountRepositoryInterface):
         self._account_collection = account_collection
 
     async def __get_account(self, _filter: dict):
-        if (account := await self._account_collection.find_one(filter=_filter)) is None:
+        if (account := await self._account_collection
+                .find_one(filter=_filter)) is None:
             raise_exception(status.HTTP_404_NOT_FOUND, 'Account not found')
         return account
 
@@ -33,8 +34,10 @@ class AccountRepository(AccountRepositoryInterface):
         result = await self._account_collection.insert_one(document=document)
         return await self.__get_account({'_id': result.inserted_id})
 
-    async def create_account(self, password: str, account_data: CreateAccountSchema):
-        stripe_account = await self.__create_stripe_account(account_data=account_data)
+    async def create_account(self, password: str,
+                             account_data: CreateAccountSchema):
+        stripe_account = await self.__create_stripe_account(
+            account_data=account_data)
         document = {
             'password': password,
             'created': datetime.utcnow(),

@@ -1,5 +1,6 @@
 from .schemas import CreateBookingSchema
-from .interfaces.booking_repositories_interface import BookingRepositoriesInterface
+from .interfaces.booking_repositories_interface import \
+    BookingRepositoriesInterface
 
 
 class BookingService:

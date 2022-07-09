@@ -12,7 +12,8 @@ account_collection = hotel_database.account
 async def get_account_collection(): yield account_collection
 
 
-async def get_account_service(_account_collection=Depends(get_account_collection)):
+async def get_account_service(
+        _account_collection=Depends(get_account_collection)):
     yield {
         'token_service': TokenService(
             secret_key=get_configs().secret_key,

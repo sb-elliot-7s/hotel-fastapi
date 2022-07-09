@@ -23,9 +23,12 @@ class CreateAccountSchema(BaseAccountSchema):
 
     @property
     def transform_dict(self):
-        _date_birth = datetime.combine(self.date_birth, time().min) if self.date_birth else None
+        _date_birth = datetime.combine(
+            self.date_birth, time().min) if self.date_birth else None
         return {
-            **self.dict(exclude_none=True, exclude={'password', 'date_birth', 'account_type'}),
+            **self.dict(exclude_none=True, exclude={
+                'password', 'date_birth', 'account_type'
+            }),
             'date_birth': _date_birth,
             'account_type': self.account_type.value
         }

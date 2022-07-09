@@ -18,7 +18,8 @@ class AggregationMixin:
         }
 
     @staticmethod
-    def search_text(text: Optional[str]): return {'$text': {'$search': text or ''}}
+    def search_text(text: Optional[str]):
+        return {'$text': {'$search': text or ''}}
 
     @staticmethod
     def match(query: dict): return {'$match': query}
@@ -46,7 +47,8 @@ class AggregationMixin:
     def set_document(document: dict): return {'$set': document}
 
     @staticmethod
-    def push_item_to_array(**field_and_items): return {'$push': {**field_and_items}}
+    def push_item_to_array(**field_and_items):
+        return {'$push': {**field_and_items}}
 
     @staticmethod
     def push_items_to_array(array_name: str, items: list, default=None):
@@ -77,11 +79,14 @@ class AggregationMixin:
     def group_by(_id: Union[str, dict], **fields):
         return {'$group': {'_id': _id, **fields}}
 
-    async def get_common_pipeline_for_find_apartments(self, skip: int, limit: int, _filter: dict):
+    async def get_common_pipeline_for_find_apartments(
+            self, skip: int, limit: int, _filter: dict):
         return [
             self.match(query=_filter),
-            self.add_fields(new_name='apt_id', operator='toString', old_name='_id'),
-            self.lookup(secondary_collection='review', secondary_collection_field='apartment_id',
+            self.add_fields(
+                new_name='apt_id', operator='toString', old_name='_id'),
+            self.lookup(secondary_collection='review',
+                        secondary_collection_field='apartment_id',
                         primary_collection_field='apt_id', _as='reviews'),
             self.skip(value=skip),
             self.limit(value=limit),
@@ -91,6 +96,7 @@ class AggregationMixin:
     async def get_pipeline_for_detail_apartment(self, apartment_id: str):
         return [
             self.match(query={'_id': ObjectId(apartment_id)}),
-            self.add_fields(new_name='apt_id', operator='toString', old_name='_id'),
+            self.add_fields(new_name='apt_id', operator='toString',
+                            old_name='_id'),
             self.lookup('review', 'apartment_id', 'apt_id', 'reviews')
         ]
