@@ -32,10 +32,10 @@ class PaymentRepositories(AggregationMixin, PaymentRepositoriesInterface):
             receipt_email=account.email,
             idempotency_key=str(uuid.uuid4())
         )
-        am = str(payment_data.amount)[:-2] + '.' + str(payment_data.amount)[-2:]
+        amount = str(payment_data.amount)[:-2] + '.' + str(payment_data.amount)[-2:]
         document = {
             'payment_id': charge['id'],
-            'amount': am,
+            'amount': amount,
             'currency': payment_data.currency,
             'description': payment_data.description,
             'apartment_id': payment_data.apartment_id,

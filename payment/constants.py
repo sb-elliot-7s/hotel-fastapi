@@ -18,3 +18,10 @@ class ReasonRefund(Enum):
     DUPLICATE = 'duplicate'
     FRAUDULENT = 'fraudulent'
     REQUESTED_BY_CUSTOMER = 'requested_by_customer'
+
+
+class RefundStatus(Enum):
+    PENDING = 'pending'
+    SUCCEEDED = 'succeeded'
+    FAILED = 'failed'
+    REQUIRES_ACTION = 'requires_action'
